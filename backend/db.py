@@ -1,5 +1,5 @@
 from motor.motor_asyncio import AsyncIOMotorClient
-from backend.core.config import MONGO_URI
+from core.config import MONGO_URL
 
-client = AsyncIOMotorClient(MONGO_URI)
+client = AsyncIOMotorClient(MONGO_URL)
 db = client.snapskill # Database name
