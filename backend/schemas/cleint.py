@@ -1,17 +1,17 @@
 from pydantic import BaseModel, EmailStr
 
-# User part
-class UserCreate(BaseModel):
+# CLient part
+class ClientCreate(BaseModel):
     name: str
     email: EmailStr
     password: str
-    role: str = "freelancer"
+    role: str = "client"
 
-class UserLogin(BaseModel):
+class ClientLogin(BaseModel):
     email: EmailStr
     password: str
 
-class UserOut(BaseModel):
+class ClientOut(BaseModel):
     id: str
     name: str
     email: str

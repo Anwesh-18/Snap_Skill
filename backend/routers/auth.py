@@ -1,7 +1,8 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, Request
 from schemas.user import UserOut, UserCreate, UserLogin
 from core.security import hash_password, verify_password, create_access_token
 from db import db
+
 
 auth = APIRouter()
 
@@ -25,5 +26,21 @@ async def login(user: UserLogin):
     db_user = await db.users.find_one({"email": user.email})
     if not db_user or not verify_password(user.password, db_user["password"]):
         raise HTTPException(status_code=400, detail="Invalid credentials")
-    token = create_access_token({"sub": db_user["email"]})
-    return {"access_token": token, "token_type": "bearer"}
+    
+    access_token = create_access_token({"sub": db_user["email"]})
+    refresh_token = create_access_token({"sub": db_user["email"]})
+
+    return{
+        "access_token": access_token,
+        "refresh_token": refresh_token,
+        "token_type": "bearer"
+    }
+
+# @auth.post("/refresh")
+# async def refresh_token(request: Request):
+#     refresh_token = request.headers.get("Authorization").split(" ")[1]
+#     try:
+#         payload = jwt.decode(refresh_token, SECRET_KEY, algorithms=[ALGORITHM])
+#         email = payload.get("sub")
+#         if email is None:
+#             raise HTTPException(status_code=401, detail="Invalid token")
